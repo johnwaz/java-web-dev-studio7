@@ -4,35 +4,42 @@ import java.util.ArrayList;
 
 public abstract class BaseDisc {
 
-    private double storageCapacity;
-    private double remainingStorage;
-    private double usedSpace;
     private String name;
+    private int storageCapacity;
+    private int remainingCapacity;
+    private int capacityUsed;
     private String discType;
     private ArrayList<String> contents;
 
-    public BaseDisc(double storageCapacity, double usedSpace, String name, String discType) {
-        this.storageCapacity = storageCapacity;
-        this.usedSpace = usedSpace;
+    public BaseDisc(String name, int maxCapacity, int someUsedCapacity, String discType) {
         this.name = name;
+        this.storageCapacity = maxCapacity;
+        this.remainingCapacity = spaceLeft();
+        this.capacityUsed = checkCapacity(someUsedCapacity);
         this.discType = discType;
-        this.remainingStorage = spaceLeft();
     }
 
-    public String writeData(double dataSize) {
-        if (dataSize > this.remainingStorage) {
-            return "Sorry, there is not enough space!";
+    private int checkCapacity(int dataWritten) {
+        if (this.storageCapacity < dataWritten) {
+            return this.storageCapacity;
         }
-        this.usedSpace += dataSize;
-        this.remainingStorage -= dataSize;
-        return "Mission Accomplished! You now have " + this.remainingStorage + " space left.";
+        return dataWritten;
     }
 
-    public double spaceLeft() {
-        return this.storageCapacity - this.usedSpace;
+    private int spaceLeft() {
+        return this.storageCapacity - this.capacityUsed;
     }
 
     public String discInfo() {
-        return name + " is " + storageCapacity + " used " + usedSpace + " remaining " + remainingStorage;
+        return "\nDisc Name: " + this.name + "\nMax Capacity: " + this.storageCapacity + "\nSpace Used: " + this.capacityUsed + "\nAvailable Space: " + this.remainingCapacity;
+    }
+
+    public String writeData(int dataSize) {
+        if (dataSize > this.remainingCapacity) {
+            return "Not enough disc space!";
+        }
+        this.capacityUsed += dataSize;
+        this.remainingCapacity -= dataSize;
+        return "Data written to disc. Remaining space = " + this.remainingCapacity;
     }
 }
